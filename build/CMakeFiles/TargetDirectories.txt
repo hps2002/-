@@ -1,0 +1,4 @@
+/home/ubuntu/Thread_pool/build/CMakeFiles/rebuild_cache.dir
+/home/ubuntu/Thread_pool/build/CMakeFiles/edit_cache.dir
+/home/ubuntu/Thread_pool/build/CMakeFiles/test_thread.dir
+/home/ubuntu/Thread_pool/build/CMakeFiles/threadPool.dir

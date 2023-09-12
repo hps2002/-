@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/ubuntu/Thread_pool/src/thread.cc
+thread.h
+/home/ubuntu/Thread_pool/src/thread.h
+cassert
+-
+
+/home/ubuntu/Thread_pool/src/thread.h
+memory
+-
+thread
+-
+cstring
+-
+functional
+-
+vector
+-
+iostream
+-
+cstring
+-
+unistd.h
+-
+unordered_map
+-
+queue
+-
+semaphore.h
+-
+atomic
+-
+mutex
+-
+
