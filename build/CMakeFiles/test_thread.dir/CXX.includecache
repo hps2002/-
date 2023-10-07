@@ -6,41 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/ubuntu/Thread_pool/src/thread.h
-memory
--
-thread
--
-cstring
--
-functional
--
-vector
--
-iostream
--
-cstring
--
-unistd.h
--
-unordered_map
--
-queue
--
-semaphore.h
--
-atomic
--
-mutex
--
-
 /home/ubuntu/Thread_pool/tests/test_thread.cc
-../src/thread.h
-/home/ubuntu/Thread_pool/src/thread.h
 iostream
--
-unistd.h
--
-cassert
 -
 

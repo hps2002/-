@@ -1,7 +1,8 @@
 file(REMOVE_RECURSE
-  "../lib/libthreadPool.a"
-  "../lib/libthreadPool.pdb"
+  "/home/ubuntu/Thread_pool/lib/libthreadPool.a"
+  "/home/ubuntu/Thread_pool/lib/libthreadPool.pdb"
   "CMakeFiles/threadPool.dir/src/thread.cc.o"
+  "CMakeFiles/threadPool.dir/src/thread.cc.o.d"
 )
 
 # Per-language clean rules from dependency scanning.

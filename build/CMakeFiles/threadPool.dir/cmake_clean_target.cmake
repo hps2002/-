@@ -1,3 +1,3 @@
 file(REMOVE_RECURSE
-  "../lib/libthreadPool.a"
+  "/home/ubuntu/Thread_pool/lib/libthreadPool.a"
 )
