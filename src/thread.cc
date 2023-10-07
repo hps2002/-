@@ -1,12 +1,20 @@
 #include "thread.h"
 #include <cassert>
+#include <unistd.h>
 
 namespace hps {
 
 uint32_t Thread::m_id = 0;
 
-// static thread_local Thread* t_thread = nullptr;
-// static thread_local std::string t_thread_name = "UNNKOW";
+static unsigned int cpuNum;
+
+struct _INIT {
+  _INIT() {
+    cpuNum = sysconf(_SC_NPROCESSORS_ONLN);
+  }
+};
+
+static _INIT init;
 
 Semaphore::Semaphore(int count) {
   if (sem_init(&this -> m_semaphore, 0, count)) {
@@ -78,11 +86,14 @@ void ThreadPool::work(uint32_t id) {
   this -> m_semaphore.notify();
   while (true) {
     ThreadPool::Task task;
+    this -> changeThreadNum();
+    // 等待任务出现
     while (this -> m_taskNum <= 0) {
       if (this -> m_taskNum) {
         break;
       }
     }
+
     {
       hps::MutexLock lock();
       std::cout << "Thread: " << id << ", running task:";
@@ -97,6 +108,22 @@ void ThreadPool::work(uint32_t id) {
 void ThreadPool::addTask(Task task) {
   this -> m_TaskQue.push(task);
   this -> m_taskNum ++;
+}
+
+bool ThreadPool::changeThreadNum() {
+  if (m_threads.size() >= cpuNum) return true;
+  if (m_TaskQue.size() >= cpuNum) {
+      {
+        try {
+          hps::MutexLock lock();
+          this -> addThread(Thread::getNowId());
+        } catch(std::exception& e) {
+          std::cout << "Error: changeThreadNum has faild";
+          return false;
+        }
+      }
+  }
+  return true;
 }
 
 }

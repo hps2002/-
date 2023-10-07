@@ -201,6 +201,8 @@ public:
   void addThread(uint32_t id); // 往线程池里面添加新的线程
   void work(uint32_t id); // 往线程池里面添加新的线程
   void addTask(Task task); // 添加任务
+  bool changeThreadNum(); //修改当前线程池的大小, 如果当前的任务数量大于cpu核心数量的话直接使用核心数的最大值
+
 private:
   // 线程池相关
   std::unordered_map<uint32_t, std::shared_ptr<Thread> > m_threads;
