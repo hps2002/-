@@ -2,6 +2,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <cassert>
+#include <sys/wait.h>
 
 void TestFunc() {
   std::cout << "Test begin." << std::endl;
@@ -38,13 +39,20 @@ void test_lock_func() {
 }
 
 void test_Lock() {
-  hps::ThreadPool p(6);	
+  hps::ThreadPool p(2);	
   p.start();
   hps::ThreadPool::Task task;
   task.tfc = test_lock_func;
+  p.addTask([](){
+    std::cout << "Hello ThreadPool!" << std::endl;
+  });
   p.addTask(task);
   sleep(2);
 	std::cout << num << std::endl;
+  sleep(3);
+  p.addTask([](){
+    std::cout << "test cpu" << std::endl;
+  });
 }
 
 int main() {

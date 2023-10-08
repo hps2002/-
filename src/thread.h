@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cstring>
 #include <unistd.h>
-#include <unordered_map>
+#include <map>
 #include <queue>
 #include <semaphore.h>
 #include <atomic>
@@ -230,7 +230,7 @@ public:
   bool changeThreadNum(); //修改当前线程池的大小, 如果当前的任务数量大于cpu核心数量的话直接使用核心数的最大值
 private:
   // 线程池相关
-  std::unordered_map<uint32_t, std::shared_ptr<Thread> > m_threads;
+  std::map<uint32_t, std::shared_ptr<Thread> > m_threads;
   int m_threadNum;
 
   // 任务队列相关

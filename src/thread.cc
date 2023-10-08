@@ -39,12 +39,12 @@ void Semaphore::notify() {
 
 Thread::Thread(Func fc, std::string name):m_name(name), m_fc(std::move(fc))
 {
-   std::cout << "Thread:" << m_id << ", " << "name:" << m_name << std::endl;
+  //  std::cout << "Thread:" << m_id << ", " << "name:" << m_name << std::endl;
 }
 
 Thread::~Thread() {
   m_thread.reset();
-   std::cout << "~Thread:" << m_id << ", " << "name:" << m_name << std::endl;
+  //  std::cout << "~Thread:" << m_id << ", " << "name:" << m_name << std::endl;
 }
 
 // 启动线程
@@ -84,8 +84,9 @@ void ThreadPool::addThread(uint32_t id)
 
 void ThreadPool::work(uint32_t id) {
   // this -> m_semaphore.notify();
- 	std::cout << "\nThread:" << id << ", In ThreadPool::wrok(uint32_t)" << std::endl;
+ 	// std::cout << "\nThread:" << id << ", In ThreadPool::wrok(uint32_t)" << std::endl;
  	while (true) {
+    this -> m_semaphore.wait();
     ThreadPool::Task task;
     this -> changeThreadNum();
     // 等待任务出现
@@ -100,7 +101,7 @@ void ThreadPool::work(uint32_t id) {
       if (m_TaskQue.size() == 0) {
         continue;
       }
-      std::cout << this -> m_taskNum << std::endl;
+      // std::cout << this -> m_taskNum << std::endl;
       task = m_TaskQue.front();
       m_TaskQue.pop();
       this -> m_taskNum --;
@@ -112,12 +113,18 @@ void ThreadPool::work(uint32_t id) {
 void ThreadPool::addTask(Task task) {
   this -> m_TaskQue.push(task);
   this -> m_taskNum ++;
+  this -> m_semaphore.notify();
 }
 
 void ThreadPool::addTask(ThreadPool::TaskFunc fc) {
   {
     MutexType::Lock lock(m_mutex);
+    ThreadPool::Task task;
+    task.tfc = fc;
+    m_TaskQue.push(task);
+    m_taskNum ++;
   }
+  this -> m_semaphore.notify();
 }
 
 bool ThreadPool::changeThreadNum() {
