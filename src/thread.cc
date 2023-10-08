@@ -39,12 +39,12 @@ void Semaphore::notify() {
 
 Thread::Thread(Func fc, std::string name):m_name(name), m_fc(std::move(fc))
 {
-  // std::cout << "Thread:" << m_id << ", " << "name:" << m_name << std::endl;
+   std::cout << "Thread:" << m_id << ", " << "name:" << m_name << std::endl;
 }
 
 Thread::~Thread() {
   m_thread.reset();
-  // std::cout << "~Thread:" << m_id << ", " << "name:" << m_name << std::endl;
+   std::cout << "~Thread:" << m_id << ", " << "name:" << m_name << std::endl;
 }
 
 // 启动线程
@@ -69,7 +69,7 @@ ThreadPool::~ThreadPool() {
 
 void ThreadPool::start() {
   for (int i = 0; i < this -> m_threadNum; i ++) {
-    this -> addThread(Thread::getNowId());
+    this -> addThread(i);
   }
 }
 
@@ -79,12 +79,13 @@ void ThreadPool::addThread(uint32_t id)
     work(id);
   }, "No:" + std::to_string(id)));
   this -> m_threads[id] -> start();
-  this -> m_semaphore.wait();
+  // this -> m_semaphore.wait();
 }
 
 void ThreadPool::work(uint32_t id) {
-  this -> m_semaphore.notify();
-  while (true) {
+  // this -> m_semaphore.notify();
+ 	std::cout << "\nThread:" << id << ", In ThreadPool::wrok(uint32_t)" << std::endl;
+ 	while (true) {
     ThreadPool::Task task;
     this -> changeThreadNum();
     // 等待任务出现
@@ -95,8 +96,11 @@ void ThreadPool::work(uint32_t id) {
     }
 
     {
-      hps::MutexLock lock();
-      std::cout << "Thread: " << id << ", running task:";
+     	MutexType::Lock lock(m_mutex);
+      if (m_TaskQue.size() == 0) {
+        continue;
+      }
+      std::cout << this -> m_taskNum << std::endl;
       task = m_TaskQue.front();
       m_TaskQue.pop();
       this -> m_taskNum --;
@@ -110,12 +114,18 @@ void ThreadPool::addTask(Task task) {
   this -> m_taskNum ++;
 }
 
+void ThreadPool::addTask(ThreadPool::TaskFunc fc) {
+  {
+    MutexType::Lock lock(m_mutex);
+  }
+}
+
 bool ThreadPool::changeThreadNum() {
   if (m_threads.size() >= cpuNum) return true;
   if (m_TaskQue.size() >= cpuNum) {
       {
         try {
-          hps::MutexLock lock();
+          MutexType::Lock lock(m_mutex);
           this -> addThread(Thread::getNowId());
         } catch(std::exception& e) {
           std::cout << "Error: changeThreadNum has faild";

@@ -17,7 +17,7 @@ void baseLine() {
   std::cout << "BaseLine begin." << std::endl;
   hps::ThreadPool pool(5); // 创建线程数量，建议是根据自己机器的核心数设置
   hps::ThreadPool::Task task; // 每条线程中需要执行的任务都是一个闭包。
-  pool.start(); // 启动线程池
+	pool.start();
 
   // 往线程池里面添加任务
   int taskNum = 10;
@@ -28,7 +28,27 @@ void baseLine() {
   std::cout << "BaseLine End." << std::endl;
 }
 
+int num = 0;
+
+void test_lock_func() {
+	std::cout << "In test_lock_func" << std::endl;
+	for (int i = 0; i < 500000; i ++) {
+    num ++;
+  }
+}
+
+void test_Lock() {
+  hps::ThreadPool p(6);	
+  p.start();
+  hps::ThreadPool::Task task;
+  task.tfc = test_lock_func;
+  p.addTask(task);
+  sleep(2);
+	std::cout << num << std::endl;
+}
+
 int main() {
-  baseLine();
+  // baseLine();
+  test_Lock();
   return 0;
 }
